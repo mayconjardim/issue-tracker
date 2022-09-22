@@ -1,6 +1,7 @@
 import { IssuesService } from './../issues.service';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Issue } from '../issue';
 
 @Component({
   selector: 'app-issue-report',
@@ -8,6 +9,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./issue-report.component.css'],
 })
 export class IssueReportComponent implements OnInit {
+  suggestions: Issue[] = [];
+
   issueForm: FormGroup | undefined;
 
   @Output() formClose = new EventEmitter();
@@ -20,9 +23,13 @@ export class IssueReportComponent implements OnInit {
   ngOnInit(): void {
     this.issueForm = this.builder.group({
       title: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       priority: ['', Validators.required],
       type: ['', Validators.required],
+    });
+
+    this.issueForm.controls['title'].valueChanges.subscribe((title: string) => {
+      this.suggestions = this.issueService.getSuggestion(title);
     });
   }
 
