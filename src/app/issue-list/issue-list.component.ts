@@ -13,6 +13,7 @@ export class IssueListComponent implements OnInit {
   constructor(private issuesService: IssuesService) {}
 
   showReportIssue = false;
+  selectedIssue: Issue | null = null;
 
   ngOnInit(): void {
     this.getIssues();
@@ -25,5 +26,13 @@ export class IssueListComponent implements OnInit {
   onCloseReport() {
     this.showReportIssue = false;
     this.getIssues();
+  }
+
+  onConfirm(confirmed: boolean) {
+    if (confirmed && this.selectedIssue) {
+      this.issuesService.completeIssue(this.selectedIssue);
+      this.getIssues();
+    }
+    this.selectedIssue = null;
   }
 }
